@@ -89,11 +89,9 @@ At the top of your application delegate include any required headers:
 {     
   R1SDK *sdk = [R1SDK sharedInstance];  
 
-  // Initialize Analytics      
+  // Initialize SDK      
   sdk.applicationId = @"YOUR APPLICATION ID";  //Ask your RadiumOne contact for an app id
 
-  // Start SDK     
-  [sdk start];      
   return YES; 
 }
 ```
@@ -103,11 +101,11 @@ At the top of your application delegate include any required headers:
 
 ##a. Engage Activation
 
-R1ConnectEngage SDK supports iOS 6 and above. It supports full-screen products (Offerwall, Interstitial, Video) and Banners.
+R1ConnectEngage SDK supports iOS 6.0 and above. It supports full-screen products (Offerwall, Interstitial, Video) and Banners.
 
 #### SDK Initialization
 
-You will need to enable Engage in your App Delegate. In your `application: didFinishLaunchingWithOptions:` method, and insert the following code:
+You will need to enable Engage in your App Delegate. In your `application: didFinishLaunchingWithOptions:` method insert the following code:
 ```objc	
 R1SDK *sdk = [R1SDK sharedInstance];
 sdk.engageEnabled = YES;
@@ -151,7 +149,7 @@ Using the block-based API gives you lower level control to implement error handl
 ```objc
 - (void)loadViewController
 {
-  self.offerwallViewController = [[R1EngageOfferwallViewController alloc] init];
+  self.offerwallViewController = [R1EngageOfferwallViewController viewController];
   // Also you can setup other optional info in any place of application
   [R1EngageSDK sharedInstance].userId = @"OPTIONAL USER ID";
   [R1EngageSDK sharedInstance].trackId = @"OPTIONAL TRACK ID";
@@ -189,13 +187,21 @@ If not using the block-based method, the following convenience method is provide
 ```objc
 - (void)loadAndShowViewController
 {
-  self.offerwallViewController = [[R1EngageOfferwallViewController alloc] init];
+  self.offerwallViewController = [R1EngageOfferwallViewController viewController];
   self.offerwallViewController.delegate = self;
   [self.offerwallViewController loadAndShowFromViewController:self];
 }
 ```
 
 ####Delegate-based Full-screen View Handling
+
+Setup for Full-screen View handling is as easy as instantiating the desired view controller, setting the delegate and then calling the load method on the target view controller.
+
+```objc
+self.offerwallViewController = [R1EngageOfferwallViewController viewController];
+self.offerwallViewController.delegate = self;
+[self.offerwallViewController load:nil];
+```
 
 The advertising loading process results in three events:
 
@@ -406,18 +412,33 @@ rewards. But you can do it manually (for example after application launching):
 
 ##b. Analytics Activation
 
+#### Setup your App Delegate
+
+```objc
+#import "R1SDK.h"
+#import "R1Emitter.h"
+```
+
+```objc
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+{     
+  R1SDK *sdk = [R1SDK sharedInstance];  
+
+  // Initialize SDK     
+  sdk.applicationId = @"YOUR APPLICATION ID";  //Ask your RadiumOne contact for an app id
+
+  // Start Analytics     
+  [sdk start];   
+  
+  return YES; 
+}
+```
 
 ### i. Settings
 The following is a list of configuration parameters for the Analytics.  Most of these contain values that are sent to the tracking server to help identify your app on our platform and to provide analytics on sessions and location.
 
 ####Configuration Parameters
 
-***advertisingEnabled***
-
-Indicates (to the SDK) whether or not the application is displaying advertisiments.  A value of TRUE prevents the SDK from accessing IDFA to comply with Apple's advertising policy when advertisements are served within the application (outside of the SDK).
-```objc
-[R1SDK sharedInstance].advertisingEnabled = FALSE;
-```
 
 ***applicationUserId***
 
@@ -934,6 +955,10 @@ Once your Account Manager has set up tracking, you will start receiving attribut
 
 ##e. Geofencing Activation
 
+````
+#import "R1GeofencingSDK.h"
+````
+
 Geofencing is disabled by default.  You can enable it in the `application:didFinishLaunchingWithOptions:` method or later.
 
     sdk.geofencingEnabled = YES;
@@ -958,9 +983,6 @@ In your `sendLocalEnterNotification:` and `sendLocalExitNotification:` methods,
 you can relay your event messages to `application:didReceiveLocalNotification:`
 by overriding it on your application delegate to display these local notifications using your own keys. For example:
 
-````
-#import "R1GeofencingSDK.h"
-````
 
 ```objc
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
