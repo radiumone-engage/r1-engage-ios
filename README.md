@@ -51,7 +51,7 @@ See image below:
 
 
 ![Image of addfiles]
-(https://github.com/radiumone/Social-iOS/blob/d59fd6c2070a5a08df0e0397d62f5e973fd5be61/Doc_Images/addfiles.png)
+(Doc_Images/addfiles.png)
 
 ## b. Link the Static Library
 Go to "Build Phases" and make sure libR1ConnectEngage.a file is set in the “Link Binary With Libraries” section. If absent, please add it.
@@ -70,7 +70,7 @@ See image below:
 
 
 ![Image of framework]
-(https://github.com/radiumone/Social-iOS/blob/53e01df902e8dafe3db302e814aa8c29e596c27c/Doc_Images/framework.png)
+(Doc_Images/framework.png)
 
 
 ## c. Initialize the SDK
@@ -309,17 +309,17 @@ Set up your Interface Builder file ([Your view controller].xib):
 2. Set up class for this view
 
     ![Image of ibclass]
-    (https://github.com/radiumone/Social-iOS/blob/25c134816a94a5e00a5aab2c483c9247891457a0/Doc_Images/ibclass.png)
+    (Doc_Images/ibclass.png)
 
 3. Set up ad view size and layout
 
     ![Image of iblayout]
-    (https://github.com/radiumone/Social-iOS/blob/25c134816a94a5e00a5aab2c483c9247891457a0/Doc_Images/iblayout.png)
+    (Doc_Images/iblayout.png)
 
 4. Connect this view with bannerView object
 
     ![Image of ibconnection]
-    (https://github.com/radiumone/Social-iOS/blob/25c134816a94a5e00a5aab2c483c9247891457a0/Doc_Images/ibconnection.png)
+    (Doc_Images/ibconnection.png)
 
 ####Setup without Interface Builder
 
