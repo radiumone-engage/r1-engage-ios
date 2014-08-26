@@ -260,7 +260,6 @@ Engage supports several predefined banner classes:
 * R1Engage480x50BannerView for 480x50
 * R1Engage1024x90BannerView for 1024x90
 
-Alternately, you can use R1EngageCustomBannerView class if you would like to specifiy a custom banner size.
 
 ####Setup with Interface Builder
 
