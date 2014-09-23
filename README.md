@@ -471,13 +471,11 @@ N.B. - The Connect locationService uses the Location Manager in iOS.  For
 deployment on iOS 8 and newer, it is required that the application's property
 list (plist) file include one of the two following keys:
 
-NSLocationAlwaysUsageDescription
-//provide location updates whether the user is actively using the application or
-not via infrequent background location updates
-// OR
-NSLocationWhenInUseUsageDescription
-//provide location updates only while the user has your application as the
-foreground running app
+    NSLocationAlwaysUsageDescription
+    //provide location updates whether the user is actively using the application or not via infrequent background location updates
+    // OR
+    NSLocationWhenInUseUsageDescription
+    //provide location updates only while the user has your application as the foreground running app
 
 These are string values that need to include a description suitable to present
 to a user.  The description should explain the reason the application is
@@ -1034,13 +1032,11 @@ N.B. - The Connect locationService uses the Location Manager in iOS.  For
 deployment on iOS 8 and newer, it is required that the application's property
 list (plist) file include one of the two following keys:
 
-NSLocationAlwaysUsageDescription
-//provide location updates whether the user is actively using the application or
-not via infrequent background location updates
-// OR
-NSLocationWhenInUseUsageDescription
-//provide location updates only while the user has your application as the
-foreground running app
+    NSLocationAlwaysUsageDescription
+    //provide location updates whether the user is actively using the application or not via infrequent background location updates
+    // OR
+    NSLocationWhenInUseUsageDescription
+    //provide location updates only while the user has your application as the foreground running app
 
 These are string values that need to include a description suitable to present
 to a user.  The description should explain the reason the application is
