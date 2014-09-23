@@ -1,91 +1,91 @@
 #Table of Contents
-- [1. System Requirements](#user-content-1-system-requirements)
-- [2. SDK Initialization](#user-content-2-sdk-initialization)
+  - [1. System Requirements](#user-content-1-system-requirements)
+  - [2. SDK Initialization](#user-content-2-sdk-initialization)
   - [a. Import Files](#user-content-a-import-files)
   - [b. Link the Static Library](#user-content-b-link-the-static-library)
   - [c. Initialize the SDK](#user-content-c-initialize-the-sdk)
   - [d. Advanced Settings](#user-content-d-advanced-settings)
-- [3. Feature Activation](#user-content-3-feature-activation)
+  - [3. Feature Activation](#user-content-3-feature-activation)
   - [a. Engage Activation (optional)](#user-content-a-engage-activation)
   - [b. Analytics Activation (optional)](#user-content-b-analytics-activation)
-    - [i. Settings](#user-content-i-settings)
-    - [ii. Automatic Events](#user-content-ii-automatic-events)
-    - [iii. Standard Events](#user-content-iii-standard-events)
-    - [iv. Custom Events](#user-content-iv-custom-events)
-    - [v. Best Practices](#user-content-v-best-practices)
+  - [i. Settings](#user-content-i-settings)
+  - [ii. Automatic Events](#user-content-ii-automatic-events)
+  - [iii. Standard Events](#user-content-iii-standard-events)
+  - [iv. Custom Events](#user-content-iv-custom-events)
+  - [v. Best Practices](#user-content-v-best-practices)
   - [c. Push Notification Activation (optional)](#user-content-c-push-notification-activation)
-    - [i. Initialization](#user-content-i-initialization)
-    - [ii. Setup Apple Push Notification Services](#user-content-ii-setup-apple-push-notification-services)
-    - [iii. Segment your Audience](#user-content-iii-segment-your-audience)
+  - [i. Initialization](#user-content-i-initialization)
+  - [ii. Setup Apple Push Notification Services](#user-content-ii-setup-apple-push-notification-services)
+  - [iii. Segment your Audience](#user-content-iii-segment-your-audience)
   - [d. Attribution Tracking Activation (optional)](#user-content-d-attribution-tracking-activation)
-    - [i. Track RadiumOne Campaigns](#user-content-i-track-radiumone-campaigns)
-    - [ii. Track 3rd party Campaigns](#user-content-ii-track-3rd-party-campaigns)
-  - [e. Geofencing Activation (optional)](#user-content-e-geofecing-activation)
+  - [i. Track RadiumOne Campaigns](#user-content-i-track-radiumone-campaigns)
+  - [ii. Track 3rd party Campaigns](#user-content-ii-track-3rd-party-campaigns)
+- [e. Geofencing Activation (optional)](#user-content-e-geofecing-activation)
 
 #1. System Requirements
-The R1ConnectEngage SDK supports all mobile and tablet devices running iOS 6.0 or newer. The downloadable directory (see below "[a. Import Files](#a-import-files)") contains the library and headers for the R1ConnectEngage SDK. 
+  The R1ConnectEngage SDK supports all mobile and tablet devices running iOS 6.0 or newer with a base requirement of Xcode 4.5 used for development (Xcode 6.0 or newer is recommended). The downloadable directory (see below "[a. Import Files](#a-import-files)") contains the library and headers for the R1ConnectEngage SDK. 
 
-The library supports the following architectures:
+  The library supports the following architectures:
 
-* arm7
-* arm7s
-* arm64
+  * arm7
+  * arm7s
+  * arm64
 
-Support for iOS Simulator is also included for the following architectures
+  Support for iOS Simulator is also included for the following architectures
 
-* i386
-* x86_64
+  * i386
+  * x86_64
 
 
 #2. SDK Initialization
 
 ## a. Import Files
-1.	Download the R1ConnectEngage SDK files:
-           git clone git@github.com:radiumone/r1-engage-iOS.git
-2.	Open your iOS project in Xcode.
-3.	Select File -> Add Files to “[YOUR XCODE PROJECT]” project
-4.	Select all files in the "Lib" Folder from the repo you just cloned
-5.	When the dialog box appears, check the "Copy Items into destination group’s folder" checkbox.
+  1.	Download the R1ConnectEngage SDK files:
+  git clone git@github.com:radiumone/r1-engage-iOS.git
+  2.	Open your iOS project in Xcode.
+  3.	Select File -> Add Files to “[YOUR XCODE PROJECT]” project
+  4.	Select all files in the "Lib" Folder from the repo you just cloned
+  5.	When the dialog box appears, check the "Copy Items into destination group’s folder" checkbox.
 
-See image below:
+  See image below:
 
 
-![Image of addfiles]
+  ![Image of addfiles]
 (Doc_Images/addfiles.png)
 
 ## b. Link the Static Library
-Go to "Build Phases" and make sure libR1ConnectEngage.a file is set in the “Link Binary With Libraries” section. If absent, please add it.
+  Go to "Build Phases" and make sure libR1ConnectEngage.a file is set in the “Link Binary With Libraries” section. If absent, please add it.
 
-Make sure you add:
+  Make sure you add:
 
-* CoreLocation.framework
-* CoreBluetooth.framework
-* AdSupport.framework
-* CoreTelephony.framework
-* SystemConfiguration.framework
-* libsqlite3.dylib
-* StoreKit.framework
+  * CoreLocation.framework
+  * CoreBluetooth.framework
+  * AdSupport.framework
+  * CoreTelephony.framework
+  * SystemConfiguration.framework
+  * libsqlite3.dylib
+  * StoreKit.framework
 
-See image below:
+  See image below:
 
 
-![Image of framework]
+  ![Image of framework]
 (Doc_Images/framework.png)
 
 
 ## c. Initialize the SDK
-You will need to initialize the R1ConnectEngage Library in your App Delegate.
+  You will need to initialize the R1ConnectEngage Library in your App Delegate.
 ####Import the required header files
-At the top of your application delegate include any required headers:
+  At the top of your application delegate include any required headers:
 
-```objc
+  ```objc
 #import "R1SDK.h"
-```
+  ```
 
 ####Initialize the R1ConnectEngage SDK  Instance
 
-```objc
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+  ```objc
+  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {     
   R1SDK *sdk = [R1SDK sharedInstance];  
 
@@ -155,51 +155,51 @@ Using the block-based API gives you lower level control to implement error handl
   [R1EngageSDK sharedInstance].trackId = @"OPTIONAL TRACK ID";
   self.offerwallViewController.delegate = self;
   [self.offerwallViewController load:^(R1EngageLoadingResult result, NSError *loadError) {
-        switch (result)
-        {
-          case R1EngageLoadingResultHasOffers:
-          // server has offer(s), your code here to show the offerwall controller
-          // Note - showFromViewController is the required method for displaying
-          // the loaded full-screen view.
-            [self.offerwallViewController showFromViewController:self];
-          break;
+    switch (result)
+    {
+      case R1EngageLoadingResultHasOffers:
+        // server has offer(s), your code here to show the offerwall controller
+        // Note - showFromViewController is the required method for displaying
+        // the loaded full-screen view.
+        [self.offerwallViewController showFromViewController:self];
+        break;
 
-          case R1EngageLoadingResultNoOffers:
+      case R1EngageLoadingResultNoOffers:
 
-          break;
-          case R1EngageLoadingResultError:
+        break;
+      case R1EngageLoadingResultError:
 
-          break;
+        break;
 
-          default:
-          break;
-        }
+      default:
+        break;
+    }
   }];
- }
+}
 ```	
 
 In the above code replace:
 * \<Optional User ID\> with your own user ID (if you remove the line we’ll use the iOS Advertising Identifier in its place.
-* \<Optional Track ID\> with a custom value for your own tracking needs (we will save and return back up to 100 characters of it).
+    * \<Optional Track ID\> with a custom value for your own tracking needs (we will save and return back up to 100 characters of it).
 
-If not using the block-based method, the following convenience method is provided to automatically show available offers, but will fail silently if an error occurs or if no offers are found.  However, use of the aforementioned block-based method is recommended.
+    If not using the block-based method, the following convenience method is provided to automatically show available offers, but will fail silently if an error occurs or if no offers are found.  However, use of the aforementioned block-based method is recommended.
 
-```objc
-- (void)loadAndShowViewController
-{
-  self.offerwallViewController = [R1EngageOfferwallViewController viewController];
-  self.offerwallViewController.delegate = self;
-  [self.offerwallViewController loadAndShowFromViewController:self];
-}
-```
+    ```objc
+    - (void)loadAndShowViewController
+    {
+    self.offerwallViewController = [R1EngageOfferwallViewController viewController];
+    self.offerwallViewController.delegate = self;
+    [self.offerwallViewController loadAndShowFromViewController:self];
+    }
+    ```
 
 ####Delegate-based Full-screen View Handling
 
-Setup for Full-screen View handling is as easy as instantiating the desired view controller, setting the delegate and then calling the load method on the target view controller.
+    Setup for Full-screen View handling is as easy as instantiating the desired view controller, setting the delegate and then calling the load method on the target view controller.
 
-```objc
-self.offerwallViewController = [R1EngageOfferwallViewController viewController];
-self.offerwallViewController.delegate = self;
+    ```objc
+    self.offerwallViewController = [R1EngageOfferwallViewController viewController];
+    self.offerwallViewController.delegate = self;
 [self.offerwallViewController load:nil];
 ```
 
@@ -223,18 +223,18 @@ You can respond to these situations by setting an appropriate delegate for the E
   switch (loadResult)
   {
     case R1EngageLoadingResultHasOffers:
-    // has offer
+      // has offer
 
-    break;
-    
+      break;
+
     case R1EngageLoadingResultNoOffers:
-    break;
+      break;
 
     case R1EngageLoadingResultError:
-    break;
-    
+      break;
+
     default:
-    break;
+      break;
   }
 }
 ```
@@ -277,26 +277,26 @@ Set up your Interface file ([Your view controller].h) with “adView” as an ou
 
 Set up your implementation file([Your view controller].m):
 
-```objc
-- (void)viewDidLoad
+  ```objc
+  - (void)viewDidLoad
 {
   [super viewDidLoad];
 
   [self.bannerView load:^(R1EngageLoadingResult result, NSError *loadError) {
-      case R1EngageLoadingResultHasOffers:
+    case R1EngageLoadingResultHasOffers:
       // You can add any appropriate actions or logic here in response to the ad
       // succcessfully loading. e.g., you could unhide the bannerView if you had
       // set it up as initially hidden, or animate it in some useful way.
       break;
 
-      case R1EngageLoadingResultNoOffers:
+    case R1EngageLoadingResultNoOffers:
 
       break;
-      case R1EngageLoadingResultError:
+    case R1EngageLoadingResultError:
 
       break;
 
-      default:
+    default:
       break;
   }];
 }
@@ -304,61 +304,61 @@ Set up your implementation file([Your view controller].m):
 
 Set up your Interface Builder file ([Your view controller].xib):
 
-1. Add new view into main view
-2. Set up class for this view
+  1. Add new view into main view
+  2. Set up class for this view
 
-    ![Image of ibclass]
-    (Doc_Images/ibclass.png)
+  ![Image of ibclass]
+(Doc_Images/ibclass.png)
 
-3. Set up ad view size and layout
+  3. Set up ad view size and layout
 
-    ![Image of iblayout]
-    (Doc_Images/iblayout.png)
+  ![Image of iblayout]
+(Doc_Images/iblayout.png)
 
-4. Connect this view with bannerView object
+  4. Connect this view with bannerView object
 
-    ![Image of ibconnection]
-    (Doc_Images/ibconnection.png)
+  ![Image of ibconnection]
+(Doc_Images/ibconnection.png)
 
 ####Setup without Interface Builder
 
-Set up your Interface file ([Your view controller].h) with “adView” as an outlet:
+  Set up your Interface file ([Your view controller].h) with “adView” as an outlet:
 
-```objc
+  ```objc
 #import <UIKit/UIKit.h>
 #import "R1EngageSDK.h"
-@interface PDBannerViewController : UIViewController
+  @interface PDBannerViewController : UIViewController
 
-@property (nonatomic, strong) R1Engage320x50BannerView *bannerView;
+  @property (nonatomic, strong) R1Engage320x50BannerView *bannerView;
 
-@end
-```
+  @end
+  ```
 
-Set up your implementation file ([Your view controller].m):
+  Set up your implementation file ([Your view controller].m):
 
-```objc
-- (void)viewDidLoad
+    ```objc
+    - (void)viewDidLoad
 {
   [super viewDidLoad];
-  
+
   self.bannerView = [[R1Engage320x50BannerView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
   [self.view addSubview:self.bannerView];
-  
+
   [self.bannerView load:^(R1EngageLoadingResult result, NSError *loadError) {
-      case R1EngageLoadingResultHasOffers:
+    case R1EngageLoadingResultHasOffers:
       // You can add any appropriate actions or logic here in response to the ad
       // succcessfully loading. e.g., you could unhide the bannerView if you had
       // set it up as initially hidden, or animate it in some useful way.
       break;
 
-      case R1EngageLoadingResultNoOffers:
+    case R1EngageLoadingResultNoOffers:
 
       break;
-      case R1EngageLoadingResultError:
+    case R1EngageLoadingResultError:
 
       break;
 
-      default:
+    default:
       break;
   }];
 }
@@ -404,22 +404,22 @@ And add method to the code:
 On close of any full-screen view controller, the Engage engine will automatically check for new
 rewards. But you can do it manually (for example after application launching):
 
-```objc
-[[R1EngageSDK sharedInstance] checkCompletions];
-```
+  ```objc
+  [[R1EngageSDK sharedInstance] checkCompletions];
+  ```
 
 
 ##b. Analytics Activation
 
 #### Setup your App Delegate
 
-```objc
+  ```objc
 #import "R1SDK.h"
 #import "R1Emitter.h"
-```
+  ```
 
-```objc
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+  ```objc
+  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {     
   R1SDK *sdk = [R1SDK sharedInstance];  
 
@@ -428,7 +428,7 @@ rewards. But you can do it manually (for example after application launching):
 
   // Start Analytics     
   [sdk start];   
-  
+
   return YES; 
 }
 ```
@@ -467,10 +467,29 @@ When enabled, such as in the example above, location information will be sent au
 [R1SDK sharedInstance].locationService.autoupdateTimeout = 1200; // 20 minutes
 ```
 
+N.B. - The Connect locationService uses the Location Manager in iOS.  For
+deployment on iOS 8 and newer, it is required that the application's property
+list (plist) file include one of the two following keys:
+
+NSLocationAlwaysUsageDescription
+//provide location updates whether the user is actively using the application or
+not via infrequent background location updates
+// OR
+NSLocationWhenInUseUsageDescription
+//provide location updates only while the user has your application as the
+foreground running app
+
+These are string values that need to include a description suitable to present
+to a user.  The description should explain the reason the application is
+requesting access to the user's location.  Therefore, description you give
+should try to incorporate or reference the user benefit that may be possible
+through sharing location.
+
+
 ***appName***
 
 The application name associated with the emitter. By default, this property is populated with the `CFBundleName` string from the application bundle. If you wish to override this property, you must do so before making any tracking calls.
-		
+
 ```objc
 [R1Emitter sharedInstance].appName = @"Custom application name";
 ```
@@ -496,7 +515,7 @@ The application version associated with this emitter. By default, this property 
 ***sessionStart***
 
 If true, indicates the start of a new session. Note that when a emitter is first initiated, this is initialized to true. To prevent this default behavior, set this to `NO` when the tracker is first obtained.
- 
+
 Setting this does not send any data. If this is true, when the next emitter call is made, a parameter will be added, resulting in the emitter information indicating the start of a session.  This flag will be cleared.
 
 ```objc
@@ -508,9 +527,9 @@ Setting this does not send any data. If this is true, when the next emitter call
 ***sessionTimeout***
 
 If positive, indicates how long (in seconds) the application must transition to the inactive or background state for before the tracker will automatically indicate the start of a new session. This occurs when the app becomes active again by setting sessionStart to true. For example, if this is set to 30 seconds, and the user receives a phone call that lasts for 45 seconds while using the app, upon returning to the app, the sessionStart parameter will be set to true. If the phone call lasted 10 seconds, sessionStart will not be modified.
- 
+
 To disable automatic session tracking, set this to a negative value. To indicate the start of a session anytime the app becomes inactive or backgrounded, set this to zero.
- 
+
 By default, this is 30 seconds.
 
 ```objc
@@ -551,8 +570,8 @@ Tracks a user login within the app
 
 ```objc
 [[R1Emitter sharedInstance] emitLoginWithUserID:@"userId"
-                           	       userName:@"user_name"
-                         	      otherInfo:@{@"custom_key":@"value"}];
+userName:@"user_name"
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Registration**
@@ -561,11 +580,11 @@ Records a user registration within the app
 
 ```objc
 [[R1Emitter sharedInstance] emitRegistrationWithUserID:@"userId"
-                                              userName:@"userName"
-                                               country:@"country"
-                                                 state:@"state"
-                                                  city:@"city"
-                                             otherInfo:@{@"custom_key":@"value"}];
+userName:@"userName"
+country:@"country"
+state:@"state"
+city:@"city"
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Facebook connect**
@@ -576,7 +595,7 @@ Allows access to Facebook services
 NSArray *permissions = @[[R1EmitterSocialPermission socialPermissionWithName:@"photos" granted:YES]];
 
 [[R1Emitter sharedInstance] emitFBConnectWithPermissions:permissions
-                                  	       otherInfo:@{@"custom_key":@"value"}];
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Twitter connect**
@@ -587,9 +606,9 @@ Allows access to Twitter services
 NSArray *permissions = @[[R1EmitterSocialPermission socialPermissionWithName:@"photos" granted:YES]];
 
 [[R1Emitter sharedInstance] emitTConnectWithUserID:@"12345"
-                                          userName:@"user_name"
-                                       permissions:permissions
-                                  	 otherInfo:@{@"custom_key":@"value"}];
+userName:@"user_name"
+permissions:permissions
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **User Info**
@@ -598,18 +617,18 @@ Enables you to send user profiles to the backend.
 
 ```objc
 R1EmitterUserInfo *userInfo = [R1EmitterUserInfo userInfoWithUserID:@"userId"
-                           userName:@"userName"
-                              email:@"user@email.com"
-                          firstName:@"first name"
-                           lastName:@"last name"
-                      streetAddress:@"streetAddress"
-                              phone:@"phone"
-                               city:@"city"
-                              state:@"state"
-                                zip:@"zip"];
+userName:@"userName"
+email:@"user@email.com"
+firstName:@"first name"
+lastName:@"last name"
+streetAddress:@"streetAddress"
+phone:@"phone"
+city:@"city"
+state:@"state"
+zip:@"zip"];
 
 [[R1Emitter sharedInstance] emitUserInfo:userInfo
-                               otherInfo:@{@"custom_key":@"value"}];
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Upgrade**
@@ -634,91 +653,91 @@ A page view that provides info about that screen
 
 ```objc
 [[R1Emitter sharedInstance] emitScreenViewWithDocumentTitle:@"title"
-                            					 contentDescription:@"description"
-                           						documentLocationUrl:@"http://www.example.com/path"
-                              					   documentHostName:@"example.com"
-                                  					   documentPath:@"path"
-                                     					  otherInfo:@{@"custom_key":@"value"}];
+contentDescription:@"description"
+documentLocationUrl:@"http://www.example.com/path"
+documentHostName:@"example.com"
+documentPath:@"path"
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Transaction**
 
 ```objc
 [[R1Emitter sharedInstance] emitTransactionWithID:@"transaction_id"
-                                  	  storeID:@"store_id"
-                                 	storeName:@"store_name"
-                                    	   cartID:@"cart_id"
-                                   	  orderID:@"order_id"
-                                 	totalSale:1.5
-                                  	 currency:@"USD"
-                             	    shippingCosts:10.5
-                            	   transactionTax:12.0
-                                 	otherInfo:@{@"custom_key":@"value"}];
+storeID:@"store_id"
+storeName:@"store_name"
+cartID:@"cart_id"
+orderID:@"order_id"
+totalSale:1.5
+currency:@"USD"
+shippingCosts:10.5
+transactionTax:12.0
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **TransactionItem**
 
 ```objc
 R1EmitterLineItem *lineItem = [R1EmitterLineItem itemWithID:@"product_id"
-                              			       name:@"product_name"
-                          			   quantity:5
-                     			      unitOfMeasure:@"unit"
-                          			   msrPrice:10
-                         			  pricePaid:10
-                          			   currency:@"USD"
-                      			       itemCategory:@"category"];
+name:@"product_name"
+quantity:5
+unitOfMeasure:@"unit"
+msrPrice:10
+pricePaid:10
+currency:@"USD"
+itemCategory:@"category"];
 
 [[R1Emitter sharedInstance] emitTransactionItemWithTransactionID:@"transaction_id"
-                                                 	lineItem:lineItem
-                                                       otherInfo:@{@"custom_key":@"value"}];
+lineItem:lineItem
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Create Cart**
 
 ```objc
 [[R1Emitter sharedInstance] emitCartCreateWithCartID:@"cart_id"
-                                	   otherInfo:@{@"custom_key":@"value"}];
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Delete Cart**
 
 ```objc
 [[R1Emitter sharedInstance] emitCartDeleteWithCartID:@"cart_id"
-                       			   otherInfo:@{@"custom_key":@"value"}];
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Add To Cart**
 
 ```objc
 R1EmitterLineItem *lineItem = [R1EmitterLineItem itemWithID:@"product_id"
-                              			       name:@"product_name"
-                          			   quantity:5
-                     			      unitOfMeasure:@"unit"
-                          			   msrPrice:10
-                         			  pricePaid:10
-                          			   currency:@"USD"
-                      			       itemCategory:@"category"];
+name:@"product_name"
+quantity:5
+unitOfMeasure:@"unit"
+msrPrice:10
+pricePaid:10
+currency:@"USD"
+itemCategory:@"category"];
 
 [[R1Emitter sharedInstance] emitAddToCartWithCartID:@"cart_id"
-        				   lineItem:lineItem
-                                 	  otherInfo:@{@"custom_key":@"value"}];
+lineItem:lineItem
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 **Delete From Cart**
 
 ```objc
 R1EmitterLineItem *lineItem = [R1EmitterLineItem itemWithID:@"product_id"
-                              			       name:@"product_name"
-                          			   quantity:5
-                     			      unitOfMeasure:@"unit"
-                          			   msrPrice:10
-                         			  pricePaid:10
-                          			   currency:@"USD"
-                      			       itemCategory:@"category"];
+name:@"product_name"
+quantity:5
+unitOfMeasure:@"unit"
+msrPrice:10
+pricePaid:10
+currency:@"USD"
+itemCategory:@"category"];
 
 [[R1Emitter sharedInstance] emitDeleteFromCartWithCartID:@"cart_id"
-        					lineItem:lineItem
-                                 	       otherInfo:@{@"custom_key":@"value"}];
+lineItem:lineItem
+otherInfo:@{@"custom_key":@"value"}];
 ```
 
 
@@ -734,7 +753,7 @@ To include tracking of custom events for the mobile app, the following callbacks
 
 // Emits a custom event with parameters
 [[R1Emitter sharedInstance] emitEvent:@"Your custom event name"
-			  			   withParameters:@{@"key":@"value"}];
+withParameters:@{@"key":@"value"}];
 ```
 
 
@@ -754,9 +773,9 @@ Another common mistake is to add parameters to the event that have too many poss
 
 ```objc
 [[R1Emitter sharedInstance] emitEvent:@"ProfileViewing"
-			withParameters:@{"profileFollowers":profileFollowers}];
+withParameters:@{"profileFollowers":profileFollowers}];
 ```
-			  			   
+
 Again, the problem here is that each profile may have any number of followers. This will fragment your data too much to extract any valuable information.
 
 A good strategy would be to define relevant buckets for high variance parameters. In this case, it might be more relevant to separate traffic on the profiles with a high follower count from traffic on profiles with a low count. You could define 3 categories: 
@@ -769,10 +788,10 @@ A proper event could be
 
 ```objc
 [[R1Emitter sharedInstance] emitEvent:@"ProfileViewing"
-			withParameters:@{"profileFollowersBucket":@"VERY_INFLUENTIAL"}];
+withParameters:@{"profileFollowersBucket":@"VERY_INFLUENTIAL"}];
 ```
 
-			  			   
+
 This will enable you to create more insightful reports.
 
 ##c. Push Notification Activation
@@ -792,22 +811,22 @@ This will enable you to create more insightful reports.
 ```objc
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    R1SDK *sdk = [R1SDK sharedInstance];
-    
-    // Initialize SDK
-    sdk.applicationId = @"Application ID";  //Ask your RadiumOne contact for an app id
-    
-    // Initialize Push Notification
-    sdk.clientKey = @"Your Client Key";  //Ask your RadiumOne contact for a client key
-    [[R1Push sharedInstance] handleNotification:[launchOptions valueForKey:UIApplicationLaunchOptionsRemoteNotificationKey]
-                                 applicationState: application.applicationState];
-    [[R1Push sharedInstance] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
-                                                                 UIRemoteNotificationTypeSound |
-                                                                 UIRemoteNotificationTypeAlert)];
-    
-    // Start SDK
-    [sdk start];
-    return YES;
+  R1SDK *sdk = [R1SDK sharedInstance];
+
+  // Initialize SDK
+  sdk.applicationId = @"Application ID";  //Ask your RadiumOne contact for an app id
+
+  // Initialize Push Notification
+  sdk.clientKey = @"Your Client Key";  //Ask your RadiumOne contact for a client key
+  [[R1Push sharedInstance] handleNotification:[launchOptions valueForKey:UIApplicationLaunchOptionsRemoteNotificationKey]
+    applicationState: application.applicationState];
+  [[R1Push sharedInstance] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+      UIRemoteNotificationTypeSound |
+      UIRemoteNotificationTypeAlert)];
+
+  // Start SDK
+  [sdk start];
+  return YES;
 }
 ```
 
@@ -819,18 +838,28 @@ This will enable you to create more insightful reports.
 ```objc
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    [[R1Push sharedInstance] registerDeviceToken:deviceToken];
+  [[R1Push sharedInstance] registerDeviceToken:deviceToken];
 }
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    [[R1Push sharedInstance] failToRegisterDeviceTokenWithError:error];
+  [[R1Push sharedInstance] failToRegisterDeviceTokenWithError:error];
 }
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    [[R1Push sharedInstance] handleNotification:userInfo applicationState:application.applicationState];
+  [[R1Push sharedInstance] handleNotification:userInfo applicationState:application.applicationState];
+}
+
+// For iOS 8 and newer, it is required to implement the following callback method
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+  if(![application isRegisteredForRemoteNotifications])
+  {
+    [application registerForRemoteNotifications];
+  }
 }
 ```
- 
+
 Push is disabled by default. You can enable it in the *application:didFinishLaunchingWithOptions* method or later.
 
 ```objc
@@ -886,7 +915,7 @@ If you follow the assistant correctly, after downloading and opening the SSL Cer
 If not already in the “Keychain Access” app that contains your certificate, please open it and select the certificate that you just added. Once you select the certificate go to File > Export Items and export it as a Personal Information Exchange (.p12) file. When saving the file be sure to use the Personal Information Exchange (.p12) format.
 
 ![Files in xCode project](http://mcpdemo.herokuapp.com/static/img/help/ios_integration/image007.jpg)
-    
+
 ######Emailing your SSL certificate
 After downloading your 2 certificates (one for production, one for development), please send them to your RadiumOne account manager (with certificate passwords if you choose to add any).
 
@@ -906,7 +935,7 @@ The maximum length of a Tag is 128 characters.
 ```
 
 ***Add multiple Tags***
-	
+
 ```objc
 [[R1Push sharedInstance].tags addTags:@[ @"NEW TAG 1", @"NEW TAG 2" ]];
 ```
@@ -934,7 +963,7 @@ or
 ```
 
 ***Get all Tags***
-	
+
 ```objc
 NSArray *currentTags = [R1Push sharedInstance].tags.tags;
 ```
@@ -960,13 +989,13 @@ Once your Account Manager has set up tracking, you will start receiving attribut
 
 Geofencing is disabled by default.  You can enable it in the `application:didFinishLaunchingWithOptions:` method or later.
 
-    sdk.geofencingEnabled = YES;
-    
+sdk.geofencingEnabled = YES;
+
 To disable geofencing, either remove the above call or set its value to NO
 
 The R1GeofencingSDK also allows you to notify your users and drive engagements
 via local notification. When a user `entered` or `exited` a region (both
-`CLGeographicalRegion` and `CLBeaconRegion`) you can obtain relevant information
+    `CLGeographicalRegion` and `CLBeaconRegion`) you can obtain relevant information
 using the `NSNotification` object, and the notification object has the following
 keys to access the `CLRegion` object and its name string respectively:
 ````
@@ -979,25 +1008,43 @@ You can register region enter/exit notifications as needed as shown below:
 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendLocalExitNotification:) name:kR1GeofenceDidExitNotification object:nil];
 ````
 In your `sendLocalEnterNotification:` and `sendLocalExitNotification:` methods,
-you can relay your event messages to `application:didReceiveLocalNotification:`
-by overriding it on your application delegate to display these local notifications using your own keys. For example:
+   you can relay your event messages to `application:didReceiveLocalNotification:`
+   by overriding it on your application delegate to display these local notifications using your own keys. For example:
 
 
-```objc
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+   ```objc
+   - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
   if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
     // you may want to show an alert
-    
+
     NSString *alertString = [notification.userInfo objectForKey:<Your_Own_NotificationAlertBodyKey>];
     application.applicationIconBadgeNumber = 0; // reset the badge to zero
-    
+
     NSString *alertTitle = [notification.userInfo objectForKey:<Your__Own_NotificationAlertTypeKey>];
-    
+
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle message:alertString delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     [alert show];
   }
 }
 
 ```
+
+N.B. - The Connect locationService uses the Location Manager in iOS.  For
+deployment on iOS 8 and newer, it is required that the application's property
+list (plist) file include one of the two following keys:
+
+NSLocationAlwaysUsageDescription
+//provide location updates whether the user is actively using the application or
+not via infrequent background location updates
+// OR
+NSLocationWhenInUseUsageDescription
+//provide location updates only while the user has your application as the
+foreground running app
+
+These are string values that need to include a description suitable to present
+to a user.  The description should explain the reason the application is
+requesting access to the user's location.  Therefore, description you give
+should try to incorporate or reference the user benefit that may be possible
+through sharing location.
 
