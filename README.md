@@ -1,26 +1,27 @@
 #Table of Contents
   - [1. System Requirements](#user-content-1-system-requirements)
   - [2. SDK Initialization](#user-content-2-sdk-initialization)
-  - [a. Import Files](#user-content-a-import-files)
-  - [b. Link the Static Library](#user-content-b-link-the-static-library)
-  - [c. Initialize the SDK](#user-content-c-initialize-the-sdk)
-  - [d. Advanced Settings](#user-content-d-advanced-settings)
+    - [a. Import Files](#user-content-a-import-files)
+    - [b. Link the Static Library](#user-content-b-link-the-static-library)
+    - [c. Initialize the SDK](#user-content-c-initialize-the-sdk)
+    - [d. Advanced Settings](#user-content-d-advanced-settings)
   - [3. Feature Activation](#user-content-3-feature-activation)
-  - [a. Engage Activation (optional)](#user-content-a-engage-activation)
-  - [b. Analytics Activation (optional)](#user-content-b-analytics-activation)
-  - [i. Settings](#user-content-i-settings)
-  - [ii. Automatic Events](#user-content-ii-automatic-events)
-  - [iii. Standard Events](#user-content-iii-standard-events)
-  - [iv. Custom Events](#user-content-iv-custom-events)
-  - [v. Best Practices](#user-content-v-best-practices)
-  - [c. Push Notification Activation (optional)](#user-content-c-push-notification-activation)
-  - [i. Initialization](#user-content-i-initialization)
-  - [ii. Setup Apple Push Notification Services](#user-content-ii-setup-apple-push-notification-services)
-  - [iii. Segment your Audience](#user-content-iii-segment-your-audience)
-  - [d. Attribution Tracking Activation (optional)](#user-content-d-attribution-tracking-activation)
-  - [i. Track RadiumOne Campaigns](#user-content-i-track-radiumone-campaigns)
-  - [ii. Track 3rd party Campaigns](#user-content-ii-track-3rd-party-campaigns)
-- [e. Geofencing Activation (optional)](#user-content-e-geofecing-activation)
+    - [a. Engage Activation (optional)](#user-content-a-engage-activation)
+    - [b. Analytics Activation (optional)](#user-content-b-analytics-activation)
+      - [i. Settings](#user-content-i-settings)
+      - [ii. Automatic Events](#user-content-ii-automatic-events)
+      - [iii. Standard Events](#user-content-iii-standard-events)
+      - [iv. Custom Events](#user-content-iv-custom-events)
+      - [v. Best Practices](#user-content-v-best-practices)
+    - [c. Push Notification Activation (optional)](#user-content-c-push-notification-activation)
+      - [i. Initialization](#user-content-i-initialization)
+      - [ii. Setup Apple Push Notification Services](#user-content-ii-setup-apple-push-notification-services)
+      - [iii. Segment your Audience](#user-content-iii-segment-your-audience)
+    - [d. Attribution Tracking Activation (optional)](#user-content-d-attribution-tracking-activation)
+      - [i. Track RadiumOne Campaigns](#user-content-i-track-radiumone-campaigns)
+      - [ii. Track 3rd party Campaigns](#user-content-ii-track-3rd-party-campaigns)
+    - [e. Geofencing Activation (optional)](#user-content-e-geofecing-activation)
+  - [4. Submitting your App to Apple](#user-content-4-submitting-your-app-to-apple)
 
 #1. System Requirements
   The R1ConnectEngage SDK supports all mobile and tablet devices running iOS 6.0 or newer with a base requirement of Xcode 4.5 used for development (Xcode 6.0 or newer is recommended). The downloadable directory (see below "[a. Import Files](#a-import-files)") contains the library and headers for the R1ConnectEngage SDK. 
@@ -471,11 +472,13 @@ N.B. - The Connect locationService uses the Location Manager in iOS.  For
 deployment on iOS 8 and newer, it is required that the application's property
 list (plist) file include one of the two following keys:
 
-    NSLocationAlwaysUsageDescription
-    //provide location updates whether the user is actively using the application or not via infrequent background location updates
-    // OR
-    NSLocationWhenInUseUsageDescription
-    //provide location updates only while the user has your application as the foreground running app
+NSLocationAlwaysUsageDescription
+//provide location updates whether the user is actively using the application or
+not via infrequent background location updates
+// OR
+NSLocationWhenInUseUsageDescription
+//provide location updates only while the user has your application as the
+foreground running app
 
 These are string values that need to include a description suitable to present
 to a user.  The description should explain the reason the application is
@@ -1032,11 +1035,13 @@ N.B. - The Connect locationService uses the Location Manager in iOS.  For
 deployment on iOS 8 and newer, it is required that the application's property
 list (plist) file include one of the two following keys:
 
-    NSLocationAlwaysUsageDescription
-    //provide location updates whether the user is actively using the application or not via infrequent background location updates
-    // OR
-    NSLocationWhenInUseUsageDescription
-    //provide location updates only while the user has your application as the foreground running app
+NSLocationAlwaysUsageDescription
+//provide location updates whether the user is actively using the application or
+not via infrequent background location updates
+// OR
+NSLocationWhenInUseUsageDescription
+//provide location updates only while the user has your application as the
+foreground running app
 
 These are string values that need to include a description suitable to present
 to a user.  The description should explain the reason the application is
@@ -1044,3 +1049,24 @@ requesting access to the user's location.  Therefore, description you give
 should try to incorporate or reference the user benefit that may be possible
 through sharing location.
 
+#4. Submitting your App
+
+When preparing to send your binary to Apple, you will set up an application target in the iTunes Connect portal (http://itunesconnect.apple.com for details).  During this process, you will be presented with the question, "Does this app use the Advertising Identifier (IDFA)?"
+
+  ![Image of idfaCheck]
+(Doc_Images/idfaCheck.png)
+
+Your application may or may not be using this value for your own purposes, but the Connect SDK does access it (described below). So, it is required that you answer, "Yes" to the aforementioned question.
+
+If your application is utilizing Connect's analytics, geofencing or push notification features, be sure to check the last use case option - that the application uses the IDFA to "Attribute an action taken within this app to a previously served advertisement" as advertisments that you might have served can be related to users actions within your app.
+
+  ![Image of idfaAnalyticsOption]
+(Doc_Images/idfaAnalyticsOption.png)
+
+If your application is also using Connect's Engage (display advertisements) feature, be sure to select the option: "Serve advertisements within the app". Naturally, if your application is only using the Engage functionality, leave all other options unchecked (as related to Connect's use of the IDFA)
+
+  ![Image of idfaAllOptions]
+(Doc_Images/idfaAllOptions.png)
+
+
+You will also need to confirm that your app honors a user's "Limit Ad Tracking" setting in iOS.  The Connect SDK does honor this flag and will not access or otherwise utilize the IDFA value if the user has selected the "Limit Ad Tracking" feature.  Ensure that this confirmation and the previously mentioned IDFA use options are checked to facilitate a smooth application review process.
