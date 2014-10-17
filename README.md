@@ -79,13 +79,13 @@
 ####Import the required header files
   At the top of your application delegate include any required headers:
 
-  ```objc
+```objc
 #import "R1SDK.h"
-  ```
+```
 
 ####Initialize the R1ConnectEngage SDK  Instance
 
-  ```objc
+```objc
   - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {     
   R1SDK *sdk = [R1SDK sharedInstance];  
@@ -185,23 +185,23 @@ In the above code replace:
 
     If not using the block-based method, the following convenience method is provided to automatically show available offers, but will fail silently if an error occurs or if no offers are found.  However, use of the aforementioned block-based method is recommended.
 
-    ```objc
+```objc
     - (void)loadAndShowViewController
     {
     self.offerwallViewController = [R1EngageOfferwallViewController viewController];
     self.offerwallViewController.delegate = self;
     [self.offerwallViewController loadAndShowFromViewController:self];
     }
-    ```
+```
 
 ####Delegate-based Full-screen View Handling
 
     Setup for Full-screen View handling is as easy as instantiating the desired view controller, setting the delegate and then calling the load method on the target view controller.
 
-    ```objc
+```objc
     self.offerwallViewController = [R1EngageOfferwallViewController viewController];
     self.offerwallViewController.delegate = self;
-[self.offerwallViewController load:nil];
+    [self.offerwallViewController load:nil];
 ```
 
 The advertising loading process results in three events:
@@ -278,7 +278,7 @@ Set up your Interface file ([Your view controller].h) with “adView” as an ou
 
 Set up your implementation file([Your view controller].m):
 
-  ```objc
+```objc
   - (void)viewDidLoad
 {
   [super viewDidLoad];
@@ -325,20 +325,20 @@ Set up your Interface Builder file ([Your view controller].xib):
 
   Set up your Interface file ([Your view controller].h) with “adView” as an outlet:
 
-  ```objc
-#import <UIKit/UIKit.h>
-#import "R1EngageSDK.h"
+```objc
+  #import <UIKit/UIKit.h>
+  #import "R1EngageSDK.h"
   @interface PDBannerViewController : UIViewController
 
   @property (nonatomic, strong) R1Engage320x50BannerView *bannerView;
 
   @end
-  ```
+```
 
   Set up your implementation file ([Your view controller].m):
 
-    ```objc
-    - (void)viewDidLoad
+```objc
+- (void)viewDidLoad
 {
   [super viewDidLoad];
 
@@ -405,22 +405,22 @@ And add method to the code:
 On close of any full-screen view controller, the Engage engine will automatically check for new
 rewards. But you can do it manually (for example after application launching):
 
-  ```objc
+```objc
   [[R1EngageSDK sharedInstance] checkCompletions];
-  ```
+```
 
 
 ##b. Analytics Activation
 
 #### Setup your App Delegate
 
-  ```objc
+```objc
 #import "R1SDK.h"
 #import "R1Emitter.h"
-  ```
+```
 
-  ```objc
-  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
+```objc
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions 
 {     
   R1SDK *sdk = [R1SDK sharedInstance];  
 
