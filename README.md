@@ -284,21 +284,23 @@ Set up your implementation file([Your view controller].m):
   [super viewDidLoad];
 
   [self.bannerView load:^(R1EngageLoadingResult result, NSError *loadError) {
-    case R1EngageLoadingResultHasOffers:
-      // You can add any appropriate actions or logic here in response to the ad
-      // succcessfully loading. e.g., you could unhide the bannerView if you had
-      // set it up as initially hidden, or animate it in some useful way.
-      break;
-
-    case R1EngageLoadingResultNoOffers:
-
-      break;
-    case R1EngageLoadingResultError:
-
-      break;
-
-    default:
-      break;
+    switch (result)
+      case R1EngageLoadingResultHasOffers:
+        // You can add any appropriate actions or logic here in response to the ad
+        // succcessfully loading. e.g., you could unhide the bannerView if you had
+        // set it up as initially hidden, or animate it in some useful way.
+        break;
+  
+      case R1EngageLoadingResultNoOffers:
+  
+        break;
+      case R1EngageLoadingResultError:
+  
+        break;
+  
+      default:
+        break;
+    }
   }];
 }
 ```
@@ -346,21 +348,23 @@ Set up your Interface Builder file ([Your view controller].xib):
   [self.view addSubview:self.bannerView];
 
   [self.bannerView load:^(R1EngageLoadingResult result, NSError *loadError) {
-    case R1EngageLoadingResultHasOffers:
-      // You can add any appropriate actions or logic here in response to the ad
-      // succcessfully loading. e.g., you could unhide the bannerView if you had
-      // set it up as initially hidden, or animate it in some useful way.
-      break;
-
-    case R1EngageLoadingResultNoOffers:
-
-      break;
-    case R1EngageLoadingResultError:
-
-      break;
-
-    default:
-      break;
+    switch (result)
+      case R1EngageLoadingResultHasOffers:
+        // You can add any appropriate actions or logic here in response to the ad
+        // succcessfully loading. e.g., you could unhide the bannerView if you had
+        // set it up as initially hidden, or animate it in some useful way.
+        break;
+  
+      case R1EngageLoadingResultNoOffers:
+  
+        break;
+      case R1EngageLoadingResultError:
+  
+        break;
+  
+      default:
+        break;
+    }
   }];
 }
 ```
