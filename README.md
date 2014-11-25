@@ -24,7 +24,7 @@
   - [4. Submitting your App to Apple](#user-content-4-submitting-your-app-to-apple)
 
 #1. System Requirements
-  The R1ConnectEngage SDK supports all mobile and tablet devices running iOS 6.0 or newer with a base requirement of Xcode 4.5 used for development (Xcode 6.0 or newer is recommended). The downloadable directory (see below "[a. Import Files](#a-import-files)") contains the library and headers for the R1ConnectEngage SDK. 
+  The R1ConnectEngage SDK supports all mobile and tablet devices running iOS 6.0 or newer with a base requirement of Xcode 6.0 used for development (as you must build using iOS 8 SDK or newer). The downloadable directory (see below "[a. Import Files](#a-import-files)") contains the library and headers for the R1ConnectEngage SDK. 
 
   The library supports the following architectures:
 
@@ -66,12 +66,15 @@
   * SystemConfiguration.framework
   * libsqlite3.dylib
   * StoreKit.framework
+  * WKWebKit.framework - should be marked as Optional instead of Required
 
   See image below:
 
 
   ![Image of framework]
 (Doc_Images/framework.png)
+
+ It is important to add an entry to the 'Other Linker Flags' setting in your application's Build Settings in Xcode.  Add '-ObjC' to the 'Other Linker Flags' setting if it is not already present.  This is a common required flag when integrating static libraries with your code.
 
 
 ## c. Initialize the SDK
@@ -102,293 +105,308 @@
 
 ##a. Engage Activation
 
-R1ConnectEngage SDK supports iOS 6.0 and above. It supports full-screen products (Offerwall, Interstitial, Video) and Banners.
+R1ConnectEngage SDK supports iOS 6.0 and above. It supports full-screen products (Offerwall, Interstitial, Video) as well as Banners that you can place how you like in your application.  Engage also supports ad mediation allowing you to optionally pull from a larger pool of advertisements, helping you to maximize the monetization of your application.
 
-#### SDK Initialization
+#### Module Initialization
 
-You will need to enable Engage in your App Delegate. In your `application: didFinishLaunchingWithOptions:` method insert the following code:
+Engage needs to be enabled in the application's App Delegate. In the `application: didFinishLaunchingWithOptions:` method insert the following code:
 ```objc	
 R1SDK *sdk = [R1SDK sharedInstance];
 sdk.engageEnabled = YES;
 ```
 
-#### Integration of full-screen views (Offerwall, Interstitial, Video)
+#### Integration of ad views
 
-Engage has three full-screen view controllers: 
+Engage has support for three full-screen ad views: Offerwall, Interstitial, Video.  In addition to these full-screen ad views, banner ads (of various sizes) are available as well.
 
-* R1EngageOfferwallViewController
-* R1EngageInterstitialViewController
-* R1EngageVideoViewController
+All ad views are managed via proxy objects. AdViewProxy objects provide your interface to configure, load, show and respond to status updates of an ad. You can create each type of ad proxy via the 'adServerManager' object available via the 'R1EngageSDK' shared object.
 
-As an example, the following demonstrates an integration of the offerwall view. Other
-Engage full-screen views are integrated in the same way.
+The methods used to create the different AdViewProxy objects are:
 
-####Setup
+* bannerAdViewProxy
+* interstitialAdViewProxy
+* videoAdViewProxy
+* offerwallAdViewProxy
 
-Set up your interface file ([Your view controller].h) with `offerwallViewController`
+AdViewProxy objects created with these methods will be one of the corresponding types:
 
+* R1BannerAdProxy
+* R1InterstitialAdProxy
+* R1VideoAdProxy
+* R1OfferwallAdProxy
+
+As an example, you can create an interstitial proxy with the following line of code:
 ```objc
-#import <UIKit/UIKit.h>
-#import "R1EngageSDK.h"
-
-@interface ViewController : UIViewController<R1EngageContentViewControllerDelegate>
-
-@property (nonatomic, strong) R1EngageOfferwallViewController *offerwallViewController;
-
-@end
+  self.adProxy = [[R1EngageSDK sharedInstance].adServerManager interstitialAdViewProxy];
 ```
 
-####Block-based Full-screen View Handling
+In the above example, self.adProxy refers to a property of type R1InterstitialAdProxy of the calling class instance.  It is required that you retain (or, when using ARC, have a strong reference to) the created adProxy instance for the lifetime of the adView as it will release all of its managaged views and controllers once no other object is holding on to it.
 
-There are two different approaches to using the full-screen views:
+To continue our example, our property, 'adProxy' would be declared in the owning class as:
+```objc
+@property (nonatomic, strong) R1InterstitialAdProxy *adProxy;  // when using ARC
 
-1. Using a block-based API
-2. Using delegate-based API with callback methods
+or 
 
-Using the block-based API gives you lower level control to implement error handling and display of the full-screen view.
+@property (nonatomic, retain) R1InterstitialAdProxy *adProxy;  // when using classic memory management
+```
+
+#### Configuring adViewProxy objects
+
+After the adViewProxy has been created and retained as detailed above, it must be configured prior to loading an ad.  This is a fairly straightforward process as there are just three attributes to set:
+
+	* where the ad will be displayed
+	* attaching any placement identifiers needed to display the ad or track user engagement
+	* setting up callbacks for status updates from the adViewProxy.
+
+
+#### Setting the view
+
+All of the adViewProxy objects require a root view controller to be specified for their display (for the three full-screen ad views) or for the display of a supplimental full-screen view that may be presented when a banner ad receives a user tap.  The view controller passed in should be the root view controller for whatever view is meant to show the advertisement.  i.e. if the active view is part of a navigation view controller or tab view controller, then those parent view controllers should be passed in.
+```objc
+  // assuming self is a view controller in a tab view
+  [self.adProxy setRootViewControllerForAdPresentation:self.parentViewController];
+```
+
+#### PlacementIds
+
+PlacementIds identify, sometimes uniquely, one ad placement from another.  Because Engage can support multiple ad networks via its mediation feature, placementIds allow the setting of an identification tag for each ad and network that is enabled in the application.  Using this setting with mediation will be discussed in more depth later.  It is advisable that a unique value be set for Engage for your own tracking needs.  It can be any custom value of your choosing (we will save and return back up to 100 characters of it).  Since it is possible to set a placement id for more than one ad network at a time, the values are set as part of a dictionary.
+
+Continuing from the previous code example the placementIds can be set:
+```objc
+  NSMutableDictionary *dataDict = [NSMutableDictionary dictionaryWithCapacity:1];
+  
+  [dataDict setObject:@"level1Interstitial" forKey:R1AdNetworkEngage];
+
+  self.adProxy.placementIds = dataDict;
+```
+
+#### Setting the callbacks
+
+As the AdViewProxy completes various actions or encounters specific states, it will send notifications to registered listeners.  The messages it will send are:
+
+* R1AdStateLoadedNotification;
+	// Your application initiated the loading of an ad in a view and it has successfully completed and is ready to show
+* R1AdStateFailedNotification;
+	// Your application initiated the loading of an ad in a view and it failed to to load due to an error
+* R1AdStateNoContentNotification;
+	// Your application initiated the loading of an ad in a view and it failed to to load due to no advertisement being available to serve
+* R1AdStateWillAppearNotification;
+	// Your application initiated the display of an ad or a user tapped on a banner ad
+* R1AdStateWillDisappearNotification;
+	// A full-screen advertising view is about to be dismissed but is still visible
+* R1AdStateDidDisappearNotification;
+	// A full-screen advertising view finished being dismissed and is no longer visible - time to dispose of ad proxy
+
+While the application may want to respond to any of these notifications, one that is particularly important is the 'R1AdStateLoadedNotification' as this can act as the trigger to show the ad or otherwise prepare to show the ad.
+
+An example of how to register for this notification may look something like:
 
 ```objc
-- (void)loadViewController
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(interstitialLoaded:) name:R1AdStateLoadedNotification object:self.adProxy];
+```
+
+In this case, 'self' is the object that will receive the 'interstitialLoaded:' callback.  Because self.adProxy was specified as the object, only R1AdStateLoadedNotifications from that AdViewProxy will be sent to our 'self' object.
+
+An implementation of the notification handler might look like this:
+
+```objc
+- (void)interstitialLoaded:(NSNotification *)notification
 {
-  self.offerwallViewController = [R1EngageOfferwallViewController viewController];
-  // Also you can setup other optional info in any place of application
-  [R1EngageSDK sharedInstance].userId = @"OPTIONAL USER ID";
-  [R1EngageSDK sharedInstance].trackId = @"OPTIONAL TRACK ID";
-  self.offerwallViewController.delegate = self;
-  [self.offerwallViewController load:^(R1EngageLoadingResult result, NSError *loadError) {
-    switch (result)
-    {
-      case R1EngageLoadingResultHasOffers:
-        // server has offer(s), your code here to show the offerwall controller
-        // Note - showFromViewController is the required method for displaying
-        // the loaded full-screen view.
-        [self.offerwallViewController showFromViewController:self];
-        break;
-
-      case R1EngageLoadingResultNoOffers:
-
-        break;
-      case R1EngageLoadingResultError:
-
-        break;
-
-      default:
-        break;
-    }
-  }];
+	// Now that the ad is loaded, show it immediately
+   [self.adProxy showInterstitial];
 }
-```	
-
-In the above code replace:
-* \<Optional User ID\> with your own user ID (if you remove the line we’ll use the iOS Advertising Identifier in its place.
-    * \<Optional Track ID\> with a custom value for your own tracking needs (we will save and return back up to 100 characters of it).
-
-    If not using the block-based method, the following convenience method is provided to automatically show available offers, but will fail silently if an error occurs or if no offers are found.  However, use of the aforementioned block-based method is recommended.
-
-```objc
-    - (void)loadAndShowViewController
-    {
-    self.offerwallViewController = [R1EngageOfferwallViewController viewController];
-    self.offerwallViewController.delegate = self;
-    [self.offerwallViewController loadAndShowFromViewController:self];
-    }
 ```
 
-####Delegate-based Full-screen View Handling
+In the above example, as soon as the R1AdStateLoadedNotification is received, the application makes the call to show the interstitial ad view.  But your application might also use this notification as a point to initiate some other action before finally showing the advertisement.
 
-    Setup for Full-screen View handling is as easy as instantiating the desired view controller, setting the delegate and then calling the load method on the target view controller.
-
-```objc
-    self.offerwallViewController = [R1EngageOfferwallViewController viewController];
-    self.offerwallViewController.delegate = self;
-    [self.offerwallViewController load:nil];
-```
-
-The advertising loading process results in three events:
-
-1. No errors, at least one offer will be shown
-2. No errors, but no offers found
-3. Some error occurred
-
-You can respond to these situations by setting an appropriate delegate for the EngageContentViewController and implementing the `R1EngageContentViewControllerDelegate` methods.
+Note that the three full-screen ad types: interstitial, video and offerwall, can all be handled correctly with the preceding code sample.  For a banner ad, the application would respond to the R1AdStateLoadedNotification slightly differently.  There is no explicit 'show' method for a banner ad.  Once the AdViewProxy notifies the application that a banner has loaded, it is the application's responsibility to add it to the appropriate view hierarchy as it sees fit using animation or any other available option.
 
 ```objc
-- (void)engageContentViewControllerDidStartLoading:(R1EngageContentViewController *)engageContentViewController
+- (void)bannerLoaded:(NSNotification *)notification
 {
-  // fullscreen controller did start loading
-}
-
-- (void)engageContentViewController:(R1EngageContentViewController *)engageContentViewController didFinishLoadingWithResult:(R1EngageLoadingResult)loadResult loadError:(NSError *)loadError
-{
-  // fullscreen controller did finish loading
-  switch (loadResult)
+  NSDictionary  *userInfo = notification.userInfo;
+  UIView        *bannerView = [userInfo objectForKey:R1BannerViewKey];
+    
+  if(![bannerView superview])
   {
-    case R1EngageLoadingResultHasOffers:
-      // has offer
-
-      break;
-
-    case R1EngageLoadingResultNoOffers:
-      break;
-
-    case R1EngageLoadingResultError:
-      break;
-
-    default:
-      break;
+	  //assuming self is a view controller
+    [self.view addSubview:bannerView];
   }
 }
 ```
 
-You can also respond to the appearing/disappearing of the offerwall using these: 
+The R1BannerAdProxy will include the newly loaded banner view in the notification callback in the userInfo dictionary.  Use the 'R1BannerViewKey' key to access it so you can make any last minutes adjustments to the view before you ad it to the appropriate view hierarchy.  Note, when your application clears its reference to a R1BannerAdProxy instance, any banner view in a view hierarchy will automatically (and immediately) remove itself from its parent view hierarchy before the AdViewProxy disposes of view.
+
+#### Final Step - Load the Ad
+
+In the previous sections, we've outlined how to create, configure and show a full-screen ad.  But one critical step remains - loading the ad.  Loading an advertisment is done through a distinct call on each AdProxy instance. Full-screen adViewProxy objects have one of these selectors.  Each kick off the network call to load the advertisment assets.
+
+* loadInterstitial
+* loadVideo
+* loadOfferwall
+
+R1BannerAdProxy objects are only slightly different.
+
+* loadBannerType
+
+This selector takes an enumerated value from the following list of values to request a banner of a certain size.  Note that the size of the banner returned is not guaranteed to match the requested dimensions - you must check the bounds of the view when your application receives the R1AdStateLoadedNotification.
 
 ```objc
-- (void)engageContentViewControllerWillAppear:(R1EngageContentViewController *)engageContentViewController;
-- (void)engageContentViewControllerDidAppear:(R1EngageContentViewController *)engageContentViewController;
-- (void)engageContentViewControllerWillDisappear:(R1EngageContentViewController *)engageContentViewController;
-- (void)engageContentViewControllerDidDisappear:(R1EngageContentViewController *)engageContentViewController;
+  R1_300x50BannerType
+  R1_320x50BannerType
+  R1_480x50BannerType
+  R1_300x250BannerType
+  R1_728x90BannerType
+  R1_1024x90BannerType
 ```
 
-####Integration of Banner
+#### Cleaning up
 
+After a full-screen ad has displayed or if your application has navigated away from a view that was displaying a banner ad, it is time to release your reference to the corresponding adViewProxy instance.
 
-Engage supports several predefined banner classes:
+```objc
+// unregister your notification callback first!
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:R1AdStateLoadedNotification object:self.adProxy];
 
-* R1Engage300x50BannerView for 300x50
-* R1Engage320x50BannerView for 320x50
-* R1Engage300x250BannerView for 300x250
-* R1Engage728x90BannerView for 728x90
-* R1Engage480x50BannerView for 480x50
-* R1Engage1024x90BannerView for 1024x90
+// now it is safe to release your ad proxy reference.
+	self.adProxy = nil;
+```
 
+As a very basic example, the following demonstrates the integration of a banner ad along with an interstitial ad.  Other AdViewProxys are integrated in a similar way. (Note: This demonstrates all the necessary code required to display an advertisment, but is not suggesting, for example, that you should show an interstitial ad as soon as your main view loads.)
 
-####Setup with Interface Builder
-
-Set up your Interface file ([Your view controller].h) with “adView” as an outlet:
-
+In your main view controller header...
 ```objc
 #import <UIKit/UIKit.h>
 #import "R1EngageSDK.h"
-@interface PDBannerViewController : UIViewController
 
-@property (nonatomic, weak) IBOutlet R1Engage320x50BannerView *bannerView;
+@interface ViewController : UIViewController
+
+@property (nonatomic, strong) R1BannerAdProxy *bannerProxy;
+@property (nonatomic, strong) R1InterstitialAdProxy *interstitialProxy;
 
 @end
 ```
 
-Set up your implementation file([Your view controller].m):
-
-```objc
-  - (void)viewDidLoad
-{
-  [super viewDidLoad];
-
-  [self.bannerView load:^(R1EngageLoadingResult result, NSError *loadError) {
-    switch (result)
-      case R1EngageLoadingResultHasOffers:
-        // You can add any appropriate actions or logic here in response to the ad
-        // succcessfully loading. e.g., you could unhide the bannerView if you had
-        // set it up as initially hidden, or animate it in some useful way.
-        break;
-  
-      case R1EngageLoadingResultNoOffers:
-  
-        break;
-      case R1EngageLoadingResultError:
-  
-        break;
-  
-      default:
-        break;
-    }
-  }];
-}
-```
-
-Set up your Interface Builder file ([Your view controller].xib):
-
-  1. Add new view into main view
-  2. Set up class for this view
-
-  ![Image of ibclass]
-(Doc_Images/ibclass.png)
-
-  3. Set up ad view size and layout
-
-  ![Image of iblayout]
-(Doc_Images/iblayout.png)
-
-  4. Connect this view with bannerView object
-
-  ![Image of ibconnection]
-(Doc_Images/ibconnection.png)
-
-####Setup without Interface Builder
-
-  Set up your Interface file ([Your view controller].h) with “adView” as an outlet:
-
-```objc
-  #import <UIKit/UIKit.h>
-  #import "R1EngageSDK.h"
-  @interface PDBannerViewController : UIViewController
-
-  @property (nonatomic, strong) R1Engage320x50BannerView *bannerView;
-
-  @end
-```
-
-  Set up your implementation file ([Your view controller].m):
-
+In your main view controller implementation file...
 ```objc
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  // Banner setup
+  self.bannerProxy = [[R1EngageSDK sharedInstance] adServerManager bannerAdViewProxy];
+  
+  self.bannerProxy.placementIds = [NSDictionary dictionaryWithObjectsAndKeys:@"mainScreenBanner", R1AdNetworkEngage, nil];
+  
+  [self.bannerProxy setRootViewControllerForAdPresentation:self];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bannerLoaded:) name:R1AdStateLoadedNotification object:self.bannerProxy];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bannerLoadFailed:) name:R1AdStateFailedNotification object:self.bannerProxy];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bannerLoadFailed:) name:R1AdStateNoContentNotification object:self.bannerProxy];
+  
+  [self.bannerProxy loadBannerType:R1_320x50BannerType];
+  
+  
+  // Interstitial setup
+  self.interstitialProxy = [[R1EngageSDK sharedInstance] adServerManager interstitialAdViewProxy];
+  
+  self.interstitialProxy.placementIds = [NSDictionary dictionaryWithObjectsAndKeys:@"mainScreenInterstitial", R1AdNetworkEngage, nil];
+  
+  [self.interstitialProxy setRootViewControllerForAdPresentation:self];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(interstitialLoaded:) name:R1AdStateLoadedNotification object:self.interstitialProxy];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(interstitialDismissed:) name:R1AdStateDidDisappearNotification  object:self.interstitialProxy];
+  
+  [self.interstitialProxy loadInterstitial];
+}
 
-  self.bannerView = [[R1Engage320x50BannerView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
-  [self.view addSubview:self.bannerView];
+- (void)bannerLoaded:(NSNotification *)notification
+{
+  NSDictionary  *userInfo = notification.userInfo;
+  UIView        *bannerView = [userInfo objectForKey:R1BannerViewKey];
+    
+  if(![bannerView superview])
+  {
+    [self.view addSubview:bannerView];
+  }
+}
 
-  [self.bannerView load:^(R1EngageLoadingResult result, NSError *loadError) {
-    switch (result)
-      case R1EngageLoadingResultHasOffers:
-        // You can add any appropriate actions or logic here in response to the ad
-        // succcessfully loading. e.g., you could unhide the bannerView if you had
-        // set it up as initially hidden, or animate it in some useful way.
-        break;
+- (void)bannerLoadFailed:(NSNotification *)notification
+{
+  NSString  *noteName = notification.name;
+    
+  if([noteName isEqualToString:R1AdStateFailedNotification)
+  {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:self.bannerProxy];
+
+	// release our proxy
+	// since it is a general error we can try again shortly
+    self.bannerProxy = nil;
+  }
+  else if([noteName isEqualToString:R1AdStateNoContentNotification)
+  {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:self.bannerProxy];
+
+	// release our proxy
+	// since there is no content, we can try a different size or just wait
+	// awhile to see if more ad inventory is available later
+    self.bannerProxy = nil;
+  }
+}
+
+- (void)interstitialLoaded:(NSNotification *)notification
+{
+	// The insterstial is ready to be displayed, so go ahead and show it
+  [self.interstitialProxy showInterstitial];
+}
+
+- (void)interstitialDismissed:(NSNotification *)notification
+{
+	// The user dismissed the ad - clean up and release our reference to the proxy
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:self.interstitialProxy];
   
-      case R1EngageLoadingResultNoOffers:
-  
-        break;
-      case R1EngageLoadingResultError:
-  
-        break;
-  
-      default:
-        break;
-    }
-  }];
+  self.interstitialProxy = nil;
 }
 ```
 
-####Delegate-based Banner Handling
+#### Ad Mediation
 
-After initializing your desired BannerView, set an appropriate delegate and call the 'load' method.
+Ad mediation allow your application to pull from a wider pool of ad networks to fulfill an ad request giving you confidence that there will be ads to display when you want them.  Engage supports mediation by enabling ad fulfillment via the following ad networks:
 
+* Google AdMob - https://www.google.com/ads/admob/
+* MoPub - http://www.mopub.com
+
+#### Enabling ad mediation
+
+To enable mediation in your application is a four step process.
+
+1) Set up an account and create placement ids (adUnits) in the AdMob, MoPub web portals.  AdUnitIds are tied to each ad you place in your application.  You should create a unique AdUnitId for each ad placement in your application.
+
+2) Add the mediation adapter libraries (of each desired network) to your project.  These mediation adapter libraries can be found in the 'Mediation Adapters" subfolder in the SDK folder that you downloaded.
+
+* libR1AdMobMediationAdapter.a
+* libR1MoPubMediationAdapter.a
+
+  Go to the "Build Phases" tab of your target application's Xcode build settings and make sure the desired library file (from the above list) is set in the “Link Binary With Libraries” section. If absent, please add it.
+
+3) In your code, enable mediation behavior by setting the 'mediationEnabled' flag.  This can be done anywhere but a recommeded spot would be the place in your code where you enable the Engage module.
 ```objc
-// Just as with the block-based example, we allocate and add the view to the view hierarchy
-self.bannerView = [[R1Engage320x50BannerView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
-[self.view addSubview:self.bannerView];
-
-// then set up the delegate and initiate the advertisement loading
-self.bannerView.delegate = self;
-[self.bannerView load:nil];
+  [R1EngageSDK sharedInstance].adServerManager.mediationEnabled = YES;
 ```
 
-You can respond to banner loading states by setting an appropriate delegate for the BannerView and implementing the `R1EngageBannerViewDelegate` methods.
-
+4) The adUnit ids that you generate in the web portals must be used to initialize each adViewProxy instance created using the 'placementIds' property of the adViewProxy.
 ```objc
-- (void)engageBannerViewDidStartLoading:(R1EngageBannerView *)engageBannerView;
-- (void)engageBannerView:(R1EngageBannerView *)engageBannerView didFinishLoadingWithResult:(R1EngageLoadingResult) loadResult loadError:(NSError *)loadError;
+    NSMutableDictionary *dataDict = [NSMutableDictionary dictionaryWithCapacity:3];
+  
+    [dataDict setObject:@"mainScreenBanner" forKey:R1AdNetworkEngage];
+    [dataDict setObject:@"YourAdMobAdUnitId" forKey:R1AdNetworkAdMob];
+    [dataDict setObject:@"YourMoPubAdUnitId" forKey:R1AdNetworkMoPub];
+
+    self.bannerProxy.placementIds = dataDict;
 ```
+
+That's all that is required in your app! It is required to also configure the rules by which Engage will execute mediation.  The mediation rules can be manged via the Engage web portal (http://gwallet.net/gwallet-admin).  Now, whenever, you request an advertisement, Engage will automatically attempt to fill the request according to the rules you specifed in the Engage web portal.
 
 ####Checking rewards information
 
