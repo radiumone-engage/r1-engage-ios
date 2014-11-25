@@ -295,7 +295,7 @@ In your main view controller implementation file...
   [super viewDidLoad];
   
   // Banner setup
-  self.bannerProxy = [[R1EngageSDK sharedInstance] adServerManager bannerAdViewProxy];
+  self.bannerProxy = [[R1EngageSDK sharedInstance].adServerManager bannerAdViewProxy];
   
   self.bannerProxy.placementIds = [NSDictionary dictionaryWithObjectsAndKeys:@"mainScreenBanner", R1AdNetworkEngage, nil];
   
@@ -309,7 +309,7 @@ In your main view controller implementation file...
   
   
   // Interstitial setup
-  self.interstitialProxy = [[R1EngageSDK sharedInstance] adServerManager interstitialAdViewProxy];
+  self.interstitialProxy = [[R1EngageSDK sharedInstance].adServerManager interstitialAdViewProxy];
   
   self.interstitialProxy.placementIds = [NSDictionary dictionaryWithObjectsAndKeys:@"mainScreenInterstitial", R1AdNetworkEngage, nil];
   
@@ -336,7 +336,7 @@ In your main view controller implementation file...
 {
   NSString  *noteName = notification.name;
     
-  if([noteName isEqualToString:R1AdStateFailedNotification)
+  if([noteName isEqualToString:R1AdStateFailedNotification])
   {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:self.bannerProxy];
 
@@ -344,7 +344,7 @@ In your main view controller implementation file...
 	// since it is a general error we can try again shortly
     self.bannerProxy = nil;
   }
-  else if([noteName isEqualToString:R1AdStateNoContentNotification)
+  else if([noteName isEqualToString:R1AdStateNoContentNotification])
   {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:self.bannerProxy];
 
