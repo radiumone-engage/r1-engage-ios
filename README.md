@@ -66,7 +66,7 @@
   * SystemConfiguration.framework
   * libsqlite3.dylib
   * StoreKit.framework
-  * WKWebKit.framework - should be marked as Optional instead of Required
+  * WebKit.framework - should be marked as Optional instead of Required
 
   See image below:
 
@@ -140,7 +140,7 @@ As an example, you can create an interstitial proxy with the following line of c
   self.adProxy = [[R1EngageSDK sharedInstance].adServerManager interstitialAdViewProxy];
 ```
 
-In the above example, self.adProxy refers to a property of type R1InterstitialAdProxy of the calling class instance.  It is required that you retain (or, when using ARC, have a strong reference to) the created adProxy instance for the lifetime of the adView as it will release all of its managaged views and controllers once no other object is holding on to it.
+In the above example, self.adProxy refers to a property of type R1InterstitialAdProxy of the calling class instance.  It is required that you retain (or, when using ARC, have a strong reference to) the created adProxy instance for the lifetime of the adView as it will release all of its managed views and controllers once no other object is holding on to it.
 
 To continue our example, our property, 'adProxy' would be declared in the owning class as:
 ```objc
@@ -162,7 +162,7 @@ After the adViewProxy has been created and retained as detailed above, it must b
 
 #### Setting the view
 
-All of the adViewProxy objects require a root view controller to be specified for their display (for the three full-screen ad views) or for the display of a supplimental full-screen view that may be presented when a banner ad receives a user tap.  The view controller passed in should be the root view controller for whatever view is meant to show the advertisement.  i.e. if the active view is part of a navigation view controller or tab view controller, then those parent view controllers should be passed in.
+All of the adViewProxy objects require a root view controller to be specified for their display (for the three full-screen ad views) or for the display of a supplemental full-screen view that may be presented when a banner ad receives a user tap.  The view controller passed in should be the root view controller for whatever view is meant to show the advertisement.  i.e. if the active view is part of a navigation view controller or tab view controller, then those parent view controllers should be passed in.
 ```objc
   // assuming self is a view controller in a tab view
   [self.adProxy setRootViewControllerForAdPresentation:self.parentViewController];
@@ -188,9 +188,9 @@ As the AdViewProxy completes various actions or encounters specific states, it w
 * R1AdStateLoadedNotification;
 	// Your application initiated the loading of an ad in a view and it has successfully completed and is ready to show
 * R1AdStateFailedNotification;
-	// Your application initiated the loading of an ad in a view and it failed to to load due to an error
+	// Your application initiated the loading of an ad in a view and it failed to load due to an error
 * R1AdStateNoContentNotification;
-	// Your application initiated the loading of an ad in a view and it failed to to load due to no advertisement being available to serve
+	// Your application initiated the loading of an ad in a view and it failed to load due to no advertisement being available to serve
 * R1AdStateWillAppearNotification;
 	// Your application initiated the display of an ad or a user tapped on a banner ad
 * R1AdStateWillDisappearNotification;
@@ -240,7 +240,7 @@ The R1BannerAdProxy will include the newly loaded banner view in the notificatio
 
 #### Final Step - Load the Ad
 
-In the previous sections, we've outlined how to create, configure and show a full-screen ad.  But one critical step remains - loading the ad.  Loading an advertisment is done through a distinct call on each AdProxy instance. Full-screen adViewProxy objects have one of these selectors.  Each kick off the network call to load the advertisment assets.
+In the previous sections, we've outlined how to create, configure and show a full-screen ad.  But one critical step remains - loading the ad.  Loading an advertisement is done through a distinct call on each AdProxy instance. Full-screen adViewProxy objects have one of these selectors.  Each kick off the network call to load the advertisement assets.
 
 * loadInterstitial
 * loadVideo
@@ -273,7 +273,7 @@ After a full-screen ad has displayed or if your application has navigated away f
 	self.adProxy = nil;
 ```
 
-As a very basic example, the following demonstrates the integration of a banner ad along with an interstitial ad.  Other AdViewProxys are integrated in a similar way. (Note: This demonstrates all the necessary code required to display an advertisment, but is not suggesting, for example, that you should show an interstitial ad as soon as your main view loads.)
+As a very basic example, the following demonstrates the integration of a banner ad along with an interstitial ad.  Other AdViewProxys are integrated in a similar way. (Note: This demonstrates all the necessary code required to display an advertisement, but is not suggesting, for example, that you should show an interstitial ad as soon as your main view loads.)
 
 In your main view controller header...
 ```objc
@@ -357,7 +357,7 @@ In your main view controller implementation file...
 
 - (void)interstitialLoaded:(NSNotification *)notification
 {
-	// The insterstial is ready to be displayed, so go ahead and show it
+	// The interstitial is ready to be displayed, so go ahead and show it
   [self.interstitialProxy showInterstitial];
 }
 
@@ -390,7 +390,7 @@ To enable mediation in your application is a four step process.
 
   Go to the "Build Phases" tab of your target application's Xcode build settings and make sure the desired library file (from the above list) is set in the “Link Binary With Libraries” section. If absent, please add it.
 
-3) In your code, enable mediation behavior by setting the 'mediationEnabled' flag.  This can be done anywhere but a recommeded spot would be the place in your code where you enable the Engage module.
+3) In your code, enable mediation behavior by setting the 'mediationEnabled' flag.  This can be done anywhere but a recommended spot would be the place in your code where you enable the Engage module.
 ```objc
   [R1EngageSDK sharedInstance].adServerManager.mediationEnabled = YES;
 ```
@@ -406,7 +406,7 @@ To enable mediation in your application is a four step process.
     self.bannerProxy.placementIds = dataDict;
 ```
 
-That's all that is required in your app! It is required to also configure the rules by which Engage will execute mediation.  The mediation rules can be manged via the Engage web portal (http://gwallet.net/gwallet-admin).  Now, whenever, you request an advertisement, Engage will automatically attempt to fill the request according to the rules you specifed in the Engage web portal.
+That's all that is required in your app! It is required to also configure the rules by which Engage will execute mediation.  The mediation rules can be managed via the Engage web portal (http://gwallet.net/gwallet-admin).  Now, whenever, you request an advertisement, Engage will automatically attempt to fill the request according to the rules you specified in the Engage web portal.
 
 ####Checking rewards information
 
@@ -492,7 +492,7 @@ When enabled, such as in the example above, location information will be sent au
 
 N.B. - The Connect locationService uses the Location Manager in iOS.  For
 deployment on iOS 8 and newer, it is required that the application's property
-list (plist) file include one of the two following keys:
+list (plist) file includes one of the two following keys:
 
 NSLocationAlwaysUsageDescription
 //provide location updates whether the user is actively using the application or
@@ -782,13 +782,13 @@ withParameters:@{@"key":@"value"}];
 
 ###v. Best Practices
 ####Event Naming Convention
-One common mistake is to parametrize event names (with user data for example). Event names should be hard-coded values that you use to segement data on a specific category of event. 
+One common mistake is to parameterize event names (with user data for example). Event names should be hard-coded values that you use to segment data on a specific category of event. 
 
 Example: "ProfileViewing"
 
 Avoid: "Profile Viewing - Lady Gaga's profile"
 
-As you may have thousands of user profiles in your database, it is preferable to keep the event name high level ("ProfileViewing") so you can run interesting anaytics on it. High level events help answer questions like "how many profiles does a user visit every day on average?" 
+As you may have thousands of user profiles in your database, it is preferable to keep the event name high level ("ProfileViewing") so you can run interesting analytics on it. High-level events help answer questions like "how many profiles does a user visit every day on average?" 
 
 ####Parameter Variance
 
@@ -1055,7 +1055,7 @@ In your `sendLocalEnterNotification:` and `sendLocalExitNotification:` methods,
 
 N.B. - The Connect locationService uses the Location Manager in iOS.  For
 deployment on iOS 8 and newer, it is required that the application's property
-list (plist) file include one of the two following keys:
+list (plist) file includes one of the two following keys:
 
 NSLocationAlwaysUsageDescription
 //provide location updates whether the user is actively using the application or
@@ -1080,7 +1080,7 @@ When preparing to send your binary to Apple, you will set up an application targ
 
 Your application may or may not be using this value for your own purposes, but the Connect SDK does access it (described below). So, it is required that you answer, "Yes" to the aforementioned question.
 
-If your application is utilizing Connect's analytics, geofencing or push notification features, be sure to check the last use case option - that the application uses the IDFA to "Attribute an action taken within this app to a previously served advertisement" as advertisments that you might have served can be related to users actions within your app.
+If your application is utilizing Connect's analytics, geofencing or push notification features, be sure to check the last use case option - that the application uses the IDFA to "Attribute an action taken within this app to a previously served advertisement" as advertisements that you might have served can be related to users actions within your app.
 
   ![Image of idfaAnalyticsOption]
 (Doc_Images/idfaAnalyticsOption.png)
