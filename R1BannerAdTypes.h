@@ -17,6 +17,8 @@ typedef NS_ENUM(NSUInteger, R1BannerType) {
   R1_300x250BannerType,
   R1_728x90BannerType,
   R1_1024x90BannerType,
+  R1_FullscreenLandscapeBannerType,
+  R1_FullscreenPortraitBannerType,
   R1BannerTypeCount
 };
 
