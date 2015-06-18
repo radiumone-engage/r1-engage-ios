@@ -4,7 +4,6 @@
     - [a. Import Files](#user-content-a-import-files)
     - [b. Link the Static Library](#user-content-b-link-the-static-library)
     - [c. Initialize the SDK](#user-content-c-initialize-the-sdk)
-    - [d. Advanced Settings](#user-content-d-advanced-settings)
   - [3. Feature Activation](#user-content-3-feature-activation)
     - [a. Engage Activation (optional)](#user-content-a-engage-activation)
     - [b. Analytics Activation (optional)](#user-content-b-analytics-activation)
@@ -23,11 +22,11 @@
     - [d. Attribution Tracking Activation (optional)](#user-content-d-attribution-tracking-activation)
       - [i. Track RadiumOne Campaigns](#user-content-i-track-radiumone-campaigns)
       - [ii. Track 3rd party Campaigns](#user-content-ii-track-3rd-party-campaigns)
-    - [e. Geofencing Activation (optional)](#user-content-e-geofecing-activation)
-  - [4. Submitting your App to Apple](#user-content-4-submitting-your-app-to-apple)
+    - [e. Geofencing Activation (optional)](#user-content-e-geofencing-activation)
+  - [4. Submitting your App](#user-content-4-submitting-your-app)
 
 #1. System Requirements
-  The R1ConnectEngage SDK supports all mobile and tablet devices running iOS 6.0 or newer with a base requirement of Xcode 6.0 used for development (as you must build using iOS 8 SDK or newer). The downloadable directory (see below "[a. Import Files](#a-import-files)") contains the library and headers for the R1ConnectEngage SDK. 
+  The R1ConnectEngage SDK supports all mobile and tablet devices running iOS 7.0 or newer (6.0 support coming soon!) with a base requirement of Xcode 6.0 used for development (as you must build using iOS 8 SDK or newer). The downloadable directory (see below "[a. Import Files](#a-import-files)") contains the library and headers for the R1ConnectEngage SDK. 
 
   The library supports the following architectures:
 
