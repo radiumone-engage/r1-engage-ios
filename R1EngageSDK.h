@@ -30,17 +30,17 @@ typedef void (^R1AdLoadingStatusCallbackBlock) (NSArray *completedTrackIds);
 
 @property (nonatomic, assign) id<R1EngageSDKDelegate> delegate;
 
-@property (nonatomic, readonly) R1AdServerManager* adServerManager;
+@property (nonatomic, readonly) R1AdServerManager *adServerManager;
 
 + (instancetype)sharedInstance;
 
-- (void) checkCompletions;
+- (void)checkCompletions;
 
 @end
 
 @protocol R1EngageSDKDelegate <NSObject>
 
-- (void) engageSDK:(R1EngageSDK *) engageSDK didReceiveNewReward:(NSUInteger) reward;
-- (void) engageSDK:(R1EngageSDK *)engageSDK didReceiveCompletedTrackIDs:(NSArray *)completedTrackIDs;
+- (void)engageSDK:(R1EngageSDK *)engageSDK didReceiveNewReward:(NSUInteger)reward;
+- (void)engageSDK:(R1EngageSDK *)engageSDK didReceiveCompletedTrackIDs:(NSArray *)completedTrackIDs;
 
 @end
